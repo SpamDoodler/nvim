@@ -1,4 +1,15 @@
 -- This file can be loaded by calling `lua require('plugins')` from your init.vim
+local ensure_packer = function()
+  local fn = vim.fn
+  local install_path = fn.stdpath('data')..'/site/pack/packer/start/packer.nvim'
+    if fn.empty(fn.glob(install_path)) > 0 then
+          fn.system({'git', 'clone', '--depth', '1', 'https://github.com/wbthomason/packer.nvim', install_path})
+              vim.cmd [[packadd packer.nvim]]
+                  return true
+                    end
+                      return false
+                    end
+local packer_bootstrap = ensure_packer()
 
 -- Only required if you have packer configured as `opt`
 vim.cmd [[packadd packer.nvim]]
@@ -6,12 +17,22 @@ vim.cmd [[packadd packer.nvim]]
 return require('packer').startup(function(use)
   -- Packer can manage itself
 	use 'wbthomason/packer.nvim'
+
+  if packer_bootstrap then
+    require('packer').sync()
+  end
+
 	use 'shaunsingh/nord.nvim'
 	use 'EdenEast/nightfox.nvim'
   use 'nvim-lualine/lualine.nvim'
 	use {'nvim-treesitter/nvim-treesitter', run=":TSUpdate"}
   use 'akinsho/bufferline.nvim'
-  use 'kyazdani42/nvim-tree.lua'
+  use {
+    'kyazdani42/nvim-tree.lua',
+    require = {
+      'kyazdani42/nvim-web-devicons',
+    }
+  }
   use {
     'nvim-telescope/telescope.nvim',
     requires = { {'nvim-lua/plenary.nvim'} }
@@ -34,7 +55,6 @@ return require('packer').startup(function(use)
   use 'hrsh7th/cmp-nvim-lsp'
   use 'jose-elias-alvarez/null-ls.nvim'
 
-  -- Better comments
   use {
     "folke/todo-comments.nvim",
     requires = "nvim-lua/plenary.nvim",
@@ -44,5 +64,4 @@ return require('packer').startup(function(use)
       }
     end
   }
-
 end)

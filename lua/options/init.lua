@@ -35,3 +35,5 @@ vim.bo.autoindent = true
 vim.o.expandtab = true
 vim.bo.expandtab = true
 
+vim.opt.wrap = true
+vim.opt.textwidth = 80
